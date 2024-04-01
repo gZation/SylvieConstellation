@@ -117,6 +117,7 @@ MonoBehaviour:
   boostTime: 3
   currTime: 0
   starBits: {fileID: 0}
+  ConstellationSceneTransfer: 2
 --- !u!114 &1943561922515540041
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -130,7 +131,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Actions: {fileID: -944628639613478452, guid: cbc6e501d937412408611e77cd5f25c4, type: 3}
-  m_NotificationBehavior: 0
+  m_NotificationBehavior: 3
   m_UIInputModule: {fileID: 0}
   m_DeviceLostEvent:
     m_PersistentCalls:

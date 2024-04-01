@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
 /// <summary>
@@ -29,13 +30,15 @@ public class GunAbility : MonoBehaviour
     private float m_cooldownTime = 0;
     private float m_angleCharge;
     private bool charged;
+    private Vector2 aimDirection;
     #endregion
     private void Start()
     {
         // Component Reference Initialization
         m_rb = GetComponent<Rigidbody2D>();
 
-        // Initially Not Shown
+        // Initialize
+        aimDirection = Vector2.right;
         m_accuracyLineUpUI.gameObject.SetActive(false);
         m_accuracyLineDownUI.gameObject.SetActive(false);
     }
@@ -73,14 +76,33 @@ public class GunAbility : MonoBehaviour
         charged = true;
         m_angleCharge = 30f;
     }
+    public void GunInput(InputAction.CallbackContext context)
+    {
+        if (Time.time >= m_cooldownTime && context.started)
+        {
+            PrepareGun();
+            ChargeUp();
 
+            // UI
+            m_accuracyLineUpUI.gameObject.SetActive(true);
+            m_accuracyLineDownUI.gameObject.SetActive(true);
+        }
+        if (context.canceled)
+        {
+            // UI
+            m_accuracyLineUpUI.gameObject.SetActive(false);
+            m_accuracyLineDownUI.gameObject.SetActive(false);
+
+            Shoot(aimDirection, m_angleCharge);
+        }
+    }
+    public void UpdateAimDirection(Vector2 inputDirection)
+    {
+        aimDirection = inputDirection.normalized;
+    }
     // Temporary Legacy Input
     private void Update()
     {
-        // Temp UI Updater
-        Vector2 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        Vector2 aimDirection = (mousePosition - (Vector2)transform.position).normalized;
-
         // Director UI
         m_shootDirectorUI.localPosition = Vector3.ClampMagnitude(aimDirection * directorRadius, directorRadius);
         float angle = Mathf.Atan2(aimDirection.y, aimDirection.x) * Mathf.Rad2Deg;
@@ -92,32 +114,6 @@ public class GunAbility : MonoBehaviour
         m_accuracyLineUpUI.localRotation = Quaternion.AngleAxis(angleChargeOffset, Vector3.forward);
         m_accuracyLineDownUI.localRotation = Quaternion.AngleAxis(-1 * angleChargeOffset, Vector3.forward);
 
-        // TODO:
-        // Problems with this implementation:
-        // The cooldown time is dependent only on what is fired rather than what should be fired in order thus
-        // COOLDOWN time needs to make it not possible to charge this up at all and require charging before you can fire!!
-        //
-        // (Ryan) I believe this has been done
-
-        // Legacy Input For Debugging
-        // Initiate Gun
-        if (Time.time >= m_cooldownTime && Input.GetMouseButtonDown(1))
-        {
-            PrepareGun();
-            ChargeUp();
-            m_accuracyLineUpUI.gameObject.SetActive(true);
-            m_accuracyLineDownUI.gameObject.SetActive(true);
-        }
-        // Charge gun accuracy
-        if (Input.GetMouseButton(1))
-        {
-            ChargeUp();  
-        }
-        if (Input.GetMouseButtonUp(1))
-        {
-            m_accuracyLineUpUI.gameObject.SetActive(false);
-            m_accuracyLineDownUI.gameObject.SetActive(false);
-            Shoot(aimDirection, m_angleCharge);
-        }
+        ChargeUp();
     }
 }

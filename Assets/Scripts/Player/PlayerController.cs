@@ -8,6 +8,7 @@ public class PlayerController : Singleton<PlayerController>
     [SerializeField] private float speed = 7f;
 
     public bool canMove = true;
+    public bool canShoot = true;
     public Transform spawn;
 
     private Vector2 inputVector;
@@ -15,7 +16,6 @@ public class PlayerController : Singleton<PlayerController>
 
     private PlayerInput input;
     private InputAction movement;
-    private InputAction boost;
 
     private Animator anim;
 
@@ -39,7 +39,13 @@ public class PlayerController : Singleton<PlayerController>
 
     public int ConstellationSceneTransfer = 2;
 
-    private void Awake() {
+    #region Player Abilities
+    private OrbitControl m_orbitControl;
+    private GunAbility m_gunAbility;
+    #endregion
+
+    private void Awake() 
+    {
         InitializeSingleton();
         input = new PlayerInput();
         isBoosted = false;
@@ -48,9 +54,21 @@ public class PlayerController : Singleton<PlayerController>
     // Start is called before the first frame update
     void Start()
     {
+        // Adding references
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
+        m_orbitControl = GetComponent<OrbitControl>(); 
+        m_gunAbility = GetComponent<GunAbility>();
+
+        // Initialize Input C# Events
+        input.Player.Boost.performed += DoBoost;
+        input.Player.OrbitControl.performed += m_orbitControl.OrbitObjects;
+        input.Player.OrbitControl.canceled += m_orbitControl.PushObjects;
+        input.Player.GunShoot.started += m_gunAbility.GunInput;
+        input.Player.GunShoot.canceled += m_gunAbility.GunInput;
+        // Initial Controls
         canMove = true;
+        canShoot = true;
         holdSpeed = speed;
         lastPosition = transform.position;
         SetBGOffset();
@@ -58,6 +76,8 @@ public class PlayerController : Singleton<PlayerController>
         boostTime = 0;
         isBoosted = false;
         transform.position = TransitionManager.Instance.holdPos;
+
+
     }
 
     // Update is called once per frame
@@ -95,6 +115,10 @@ public class PlayerController : Singleton<PlayerController>
                 }
             }
         }
+        if (canShoot)
+        {
+            m_gunAbility.UpdateAimDirection(input.Player.GunShoot.ReadValue<Vector2>());
+        }
     }
 
     void Update() {
@@ -105,6 +129,8 @@ public class PlayerController : Singleton<PlayerController>
             SetBGOffset();
         }
         lastPosition = currentPosition;
+
+        // DEBUGGING Reset Key
         if (Keyboard.current.rKey.wasPressedThisFrame)
         {
             transform.position = spawn.transform.position;
@@ -123,15 +149,16 @@ public class PlayerController : Singleton<PlayerController>
 
     private void OnEnable() {
         movement = input.Player.Move;
-        movement.Enable();
-        input.Player.Boost.performed += DoBoost;
-        input.Player.Boost.Enable(); 
+        //movement.Enable();
+        //input.Player.Boost.Enable(); 
+        input.Player.Enable();
     }
 
     private void OnDisable() {
         movement = input.Player.Move;
-        movement.Disable();
-        input.Player.Boost.Disable();
+        //movement.Disable();
+        //input.Player.Boost.Disable();
+        input.Player.Disable();
     }
     
     private float CalculateMovement(float value, float velocityVal) {
