@@ -5,36 +5,40 @@ using UnityEngine.InputSystem;
 
 public class PlayerController : Singleton<PlayerController>
 {
+    [Header("Movement")]
     [SerializeField] private float speed = 7f;
+    public float acceleration;
+    public float decceleration;
+    public float velPower;
+    [SerializeField] private float boostTime;
+    private float holdSpeed;
+    public float currTime;
+    private bool isBoosted;
+
+    [Header("Graphical")]
+    [SerializeField] private Material bgClose;
+    [SerializeField] private Material bgFar;
+    [SerializeField] private float parallax;
+    private Vector2 bgCloseOffset;
+    private Vector2 bgFarOffset;
 
     public bool canMove = true;
     public bool canShoot = true;
     public Transform spawn;
 
-    private Vector2 inputVector;
-    private Rigidbody2D rb;
+    #region References
+    private Rigidbody2D m_rb;
+    private Animator m_animator;
+    private PlayerInput m_playerInput;
+    public ParticleSystem m_starbits;
+    #endregion
 
-    private PlayerInput input;
+    #region Input
+    private PlayerInputAction input;
     private InputAction movement;
+    private Vector2 inputVector;
+    #endregion 
 
-    private Animator anim;
-
-    public float acceleration;
-    public float decceleration;
-    public float velPower;
-
-    [SerializeField] private Material bgClose;
-    [SerializeField] private Material bgFar;
-    [SerializeField] private float parallax;
-
-    private Vector2 bgCloseOffset;
-    private Vector2 bgFarOffset;
-
-    [SerializeField] private float boostTime;
-    private float holdSpeed;
-    public float currTime;
-    private bool isBoosted;
-    public ParticleSystem starBits;
     private Vector3 lastPosition;
 
     public int ConstellationSceneTransfer = 2;
@@ -47,7 +51,7 @@ public class PlayerController : Singleton<PlayerController>
     private void Awake() 
     {
         InitializeSingleton();
-        input = new PlayerInput();
+        input = new PlayerInputAction();
         isBoosted = false;
     }
 
@@ -55,10 +59,11 @@ public class PlayerController : Singleton<PlayerController>
     void Start()
     {
         // Adding references
-        rb = GetComponent<Rigidbody2D>();
-        anim = GetComponent<Animator>();
+        m_rb = GetComponent<Rigidbody2D>();
+        m_animator = GetComponent<Animator>();
         m_orbitControl = GetComponent<OrbitControl>(); 
         m_gunAbility = GetComponent<GunAbility>();
+        m_playerInput = GetComponent<PlayerInput>();
 
         // Initialize Input C# Events
         input.Player.Boost.performed += DoBoost;
@@ -76,8 +81,6 @@ public class PlayerController : Singleton<PlayerController>
         boostTime = 0;
         isBoosted = false;
         transform.position = TransitionManager.Instance.holdPos;
-
-
     }
 
     // Update is called once per frame
@@ -94,30 +97,43 @@ public class PlayerController : Singleton<PlayerController>
         if (canMove) {
             inputVector = input.Player.Move.ReadValue<Vector2>();
 
-            anim.SetFloat("X", inputVector.x);
-            anim.SetFloat("Y", inputVector.y);
+            m_animator.SetFloat("X", inputVector.x);
+            m_animator.SetFloat("Y", inputVector.y);
 
-            float movementX = CalculateMovement(inputVector.x, rb.velocity.x);
-            float movementY = CalculateMovement(inputVector.y, rb.velocity.y);
-            rb.AddForce(movementX * Vector2.right);
-            rb.AddForce(movementY * Vector2.up);
+            float movementX = CalculateMovement(inputVector.x, m_rb.velocity.x);
+            float movementY = CalculateMovement(inputVector.y, m_rb.velocity.y);
+            m_rb.AddForce(movementX * Vector2.right);
+            m_rb.AddForce(movementY * Vector2.up);
             if (inputVector.magnitude > 0) {
                 Vector2 normMovement = inputVector.normalized;
-                anim.SetBool("isMoving", true);
-                if (!starBits.isPlaying) {
-                    starBits.Play();
+                m_animator.SetBool("isMoving", true);
+                if (!m_starbits.isPlaying) {
+                    m_starbits.Play();
                 }
             } else {
-                anim.SetBool("isMoving", false);
-                starBits.Stop();
-                if (starBits.isPlaying) {
-                    starBits.Stop();
+                m_animator.SetBool("isMoving", false);
+                m_starbits.Stop();
+                if (m_starbits.isPlaying) {
+                    m_starbits.Stop();
                 }
             }
         }
         if (canShoot)
         {
-            m_gunAbility.UpdateAimDirection(input.Player.GunShoot.ReadValue<Vector2>());
+            switch(m_playerInput.currentControlScheme)
+            {
+                case "Keyboard&Mouse":
+                    Vector2 mousePosition = Camera.main.ScreenToWorldPoint(input.Player.Aim.ReadValue<Vector2>());
+                    m_gunAbility.UpdateAimDirection((mousePosition - (Vector2)transform.position).normalized);
+                    break;
+                case "Gamepad":
+                    m_gunAbility.UpdateAimDirection(input.Player.Aim.ReadValue<Vector2>().normalized);
+                    break;
+                default:
+                    Debug.LogError("Control Scheme [" + m_playerInput.currentControlScheme + "] Not Supported");
+                    break;
+            }
+            
         }
     }
 

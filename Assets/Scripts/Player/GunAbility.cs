@@ -96,11 +96,14 @@ public class GunAbility : MonoBehaviour
             Shoot(aimDirection, m_angleCharge);
         }
     }
+    /// <summary>
+    /// Set the direction for where sylvie will aim her gun.
+    /// </summary>
+    /// <param name="inputDirection"></param>
     public void UpdateAimDirection(Vector2 inputDirection)
     {
-        aimDirection = inputDirection.normalized;
+        aimDirection = inputDirection;
     }
-    // Temporary Legacy Input
     private void Update()
     {
         // Director UI
@@ -110,7 +113,7 @@ public class GunAbility : MonoBehaviour
         m_cooldownUI.fillAmount = Mathf.Clamp((m_cooldownTime - Time.time) / m_cooldown, 0, 1);
 
         // Accuracy
-        float angleChargeOffset = m_angleCharge + 5f;
+        float angleChargeOffset = m_angleCharge + 2f;
         m_accuracyLineUpUI.localRotation = Quaternion.AngleAxis(angleChargeOffset, Vector3.forward);
         m_accuracyLineDownUI.localRotation = Quaternion.AngleAxis(-1 * angleChargeOffset, Vector3.forward);
 

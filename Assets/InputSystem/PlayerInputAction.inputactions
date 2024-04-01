@@ -294,22 +294,22 @@
                 },
                 {
                     "name": "",
-                    "id": "18db8d59-43db-4540-91b8-294d275fa07c",
-                    "path": "<Mouse>/position",
+                    "id": "2d3545da-bcc0-41f1-8302-517e4f69b0af",
+                    "path": "<Gamepad>/rightStick",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Keyboard&Mouse",
+                    "groups": "Gamepad",
                     "action": "Aim",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
                 {
                     "name": "",
-                    "id": "2d3545da-bcc0-41f1-8302-517e4f69b0af",
-                    "path": "<Gamepad>/rightStick",
+                    "id": "0b5616ca-2f74-4c0a-a314-9d7956942750",
+                    "path": "<Mouse>/position",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Gamepad",
+                    "groups": "Keyboard&Mouse",
                     "action": "Aim",
                     "isComposite": false,
                     "isPartOfComposite": false
