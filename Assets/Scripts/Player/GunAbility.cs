@@ -84,6 +84,7 @@ public class GunAbility : MonoBehaviour
             ChargeUp();
 
             // UI
+            UpdateUI();
             m_accuracyLineUpUI.gameObject.SetActive(true);
             m_accuracyLineDownUI.gameObject.SetActive(true);
         }
@@ -106,6 +107,14 @@ public class GunAbility : MonoBehaviour
         aimDirection = inputDirection;
     }
     private void Update()
+    { 
+        ChargeUp();
+    }
+    private void FixedUpdate()
+    {
+        UpdateUI();
+    }
+    private void UpdateUI()
     {
         // Director UI
         m_shootDirectorUI.localPosition = Vector3.ClampMagnitude(aimDirection * directorRadius, directorRadius);
@@ -117,7 +126,5 @@ public class GunAbility : MonoBehaviour
         float angleChargeOffset = m_angleCharge + 2f;
         m_accuracyLineUpUI.localRotation = Quaternion.AngleAxis(angleChargeOffset, Vector3.forward);
         m_accuracyLineDownUI.localRotation = Quaternion.AngleAxis(-1 * angleChargeOffset, Vector3.forward);
-
-        ChargeUp();
     }
 }

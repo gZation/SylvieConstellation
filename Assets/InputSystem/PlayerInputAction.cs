@@ -64,9 +64,18 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""Aim"",
+                    ""name"": ""AimMouse"",
                     ""type"": ""Value"",
                     ""id"": ""82e60d96-4a8b-4220-9daa-7fe4867d042d"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""AimController"",
+                    ""type"": ""Value"",
+                    ""id"": ""0a5b0a17-31ff-4399-8bd7-a3d6cbf17773"",
                     ""expectedControlType"": ""Vector2"",
                     ""processors"": """",
                     ""interactions"": """",
@@ -274,23 +283,23 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""2d3545da-bcc0-41f1-8302-517e4f69b0af"",
-                    ""path"": ""<Gamepad>/rightStick"",
-                    ""interactions"": """",
-                    ""processors"": ""StickDeadzone"",
-                    ""groups"": ""Gamepad"",
-                    ""action"": ""Aim"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
                     ""id"": ""db4d6f80-429e-4754-8487-c403623177c6"",
                     ""path"": ""<Mouse>/position"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Keyboard&Mouse"",
-                    ""action"": ""Aim"",
+                    ""action"": ""AimMouse"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""c3d56dc5-2105-4afd-a0cc-3167aece4460"",
+                    ""path"": ""<Gamepad>/rightStick"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""AimController"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -882,7 +891,8 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
         m_Player_GunShoot = m_Player.FindAction("GunShoot", throwIfNotFound: true);
         m_Player_Boost = m_Player.FindAction("Boost", throwIfNotFound: true);
         m_Player_OrbitControl = m_Player.FindAction("OrbitControl", throwIfNotFound: true);
-        m_Player_Aim = m_Player.FindAction("Aim", throwIfNotFound: true);
+        m_Player_AimMouse = m_Player.FindAction("AimMouse", throwIfNotFound: true);
+        m_Player_AimController = m_Player.FindAction("AimController", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
@@ -960,7 +970,8 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_GunShoot;
     private readonly InputAction m_Player_Boost;
     private readonly InputAction m_Player_OrbitControl;
-    private readonly InputAction m_Player_Aim;
+    private readonly InputAction m_Player_AimMouse;
+    private readonly InputAction m_Player_AimController;
     public struct PlayerActions
     {
         private @PlayerInputAction m_Wrapper;
@@ -969,7 +980,8 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
         public InputAction @GunShoot => m_Wrapper.m_Player_GunShoot;
         public InputAction @Boost => m_Wrapper.m_Player_Boost;
         public InputAction @OrbitControl => m_Wrapper.m_Player_OrbitControl;
-        public InputAction @Aim => m_Wrapper.m_Player_Aim;
+        public InputAction @AimMouse => m_Wrapper.m_Player_AimMouse;
+        public InputAction @AimController => m_Wrapper.m_Player_AimController;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -991,9 +1003,12 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
             @OrbitControl.started += instance.OnOrbitControl;
             @OrbitControl.performed += instance.OnOrbitControl;
             @OrbitControl.canceled += instance.OnOrbitControl;
-            @Aim.started += instance.OnAim;
-            @Aim.performed += instance.OnAim;
-            @Aim.canceled += instance.OnAim;
+            @AimMouse.started += instance.OnAimMouse;
+            @AimMouse.performed += instance.OnAimMouse;
+            @AimMouse.canceled += instance.OnAimMouse;
+            @AimController.started += instance.OnAimController;
+            @AimController.performed += instance.OnAimController;
+            @AimController.canceled += instance.OnAimController;
         }
 
         private void UnregisterCallbacks(IPlayerActions instance)
@@ -1010,9 +1025,12 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
             @OrbitControl.started -= instance.OnOrbitControl;
             @OrbitControl.performed -= instance.OnOrbitControl;
             @OrbitControl.canceled -= instance.OnOrbitControl;
-            @Aim.started -= instance.OnAim;
-            @Aim.performed -= instance.OnAim;
-            @Aim.canceled -= instance.OnAim;
+            @AimMouse.started -= instance.OnAimMouse;
+            @AimMouse.performed -= instance.OnAimMouse;
+            @AimMouse.canceled -= instance.OnAimMouse;
+            @AimController.started -= instance.OnAimController;
+            @AimController.performed -= instance.OnAimController;
+            @AimController.canceled -= instance.OnAimController;
         }
 
         public void RemoveCallbacks(IPlayerActions instance)
@@ -1199,7 +1217,8 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
         void OnGunShoot(InputAction.CallbackContext context);
         void OnBoost(InputAction.CallbackContext context);
         void OnOrbitControl(InputAction.CallbackContext context);
-        void OnAim(InputAction.CallbackContext context);
+        void OnAimMouse(InputAction.CallbackContext context);
+        void OnAimController(InputAction.CallbackContext context);
     }
     public interface IUIActions
     {

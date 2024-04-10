@@ -130,15 +130,13 @@ public class PlayerController : Singleton<PlayerController>
             switch (m_playerInput.currentControlScheme)
             {
                 case "Keyboard&Mouse":
-                    m_playerInput.SwitchCurrentControlScheme(m_playerInput.currentControlScheme, Keyboard.current, Mouse.current);
-                    Vector2 mousePosition = Camera.main.ScreenToWorldPoint(input.Player.Aim.ReadValue<Vector2>());
+                    Vector2 mousePosition = Camera.main.ScreenToWorldPoint(input.Player.AimMouse.ReadValue<Vector2>());
                     direction = (mousePosition - (Vector2)transform.position).normalized;
                     Debug.Log("Mouse Position: " + mousePosition);
                     m_gunAbility.UpdateAimDirection(direction);
                     break;
                 case "Gamepad":
-                    m_playerInput.SwitchCurrentControlScheme(m_playerInput.currentControlScheme, Gamepad.current);
-                    var input_vector = input.Player.Aim.ReadValue<Vector2>();
+                    var input_vector = input.Player.AimController.ReadValue<Vector2>();
                     direction = input_vector.normalized;
                     Debug.Log("Stick Ouput: " + direction);
                     m_gunAbility.UpdateAimDirection(direction);
