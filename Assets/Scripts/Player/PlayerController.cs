@@ -94,7 +94,8 @@ public class PlayerController : Singleton<PlayerController>
             isBoosted = false;
             boostTime = 0;
         }
-        if (canMove) {
+        if (canMove)
+        {
             inputVector = input.Player.Move.ReadValue<Vector2>();
 
             m_animator.SetFloat("X", inputVector.x);
@@ -104,38 +105,50 @@ public class PlayerController : Singleton<PlayerController>
             float movementY = CalculateMovement(inputVector.y, m_rb.velocity.y);
             m_rb.AddForce(movementX * Vector2.right);
             m_rb.AddForce(movementY * Vector2.up);
-            if (inputVector.magnitude > 0) {
+            if (inputVector.magnitude > 0)
+            {
                 Vector2 normMovement = inputVector.normalized;
                 m_animator.SetBool("isMoving", true);
-                if (!m_starbits.isPlaying) {
+                if (!m_starbits.isPlaying)
+                {
                     m_starbits.Play();
                 }
-            } else {
+            }
+            else
+            {
                 m_animator.SetBool("isMoving", false);
                 m_starbits.Stop();
-                if (m_starbits.isPlaying) {
+                if (m_starbits.isPlaying)
+                {
                     m_starbits.Stop();
                 }
             }
         }
         if (canShoot)
         {
-            switch(m_playerInput.currentControlScheme)
+            Vector2 direction;
+            switch (m_playerInput.currentControlScheme)
             {
                 case "Keyboard&Mouse":
+                    m_playerInput.SwitchCurrentControlScheme(m_playerInput.currentControlScheme, Keyboard.current, Mouse.current);
                     Vector2 mousePosition = Camera.main.ScreenToWorldPoint(input.Player.Aim.ReadValue<Vector2>());
-                    m_gunAbility.UpdateAimDirection((mousePosition - (Vector2)transform.position).normalized);
+                    direction = (mousePosition - (Vector2)transform.position).normalized;
+                    Debug.Log("Mouse Position: " + mousePosition);
+                    m_gunAbility.UpdateAimDirection(direction);
                     break;
                 case "Gamepad":
-                    m_gunAbility.UpdateAimDirection(input.Player.Aim.ReadValue<Vector2>().normalized);
+                    m_playerInput.SwitchCurrentControlScheme(m_playerInput.currentControlScheme, Gamepad.current);
+                    var input_vector = input.Player.Aim.ReadValue<Vector2>();
+                    direction = input_vector.normalized;
+                    Debug.Log("Stick Ouput: " + direction);
+                    m_gunAbility.UpdateAimDirection(direction);
                     break;
                 default:
                     Debug.LogError("Control Scheme [" + m_playerInput.currentControlScheme + "] Not Supported");
                     break;
             }
-            
         }
-    }
+}
 
     void Update() {
         

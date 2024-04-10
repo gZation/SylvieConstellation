@@ -1,5 +1,5 @@
 {
-    "name": "PlayerInput",
+    "name": "PlayerInputAction",
     "maps": [
         {
             "name": "Player",
@@ -9,15 +9,6 @@
                     "name": "Move",
                     "type": "Value",
                     "id": "442990ed-5f89-4cc9-9951-daa52596555a",
-                    "expectedControlType": "Vector2",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": true
-                },
-                {
-                    "name": "Look",
-                    "type": "Value",
-                    "id": "493d858f-0f8d-473c-9491-1dc7bc9c2ff7",
                     "expectedControlType": "Vector2",
                     "processors": "",
                     "interactions": "",
@@ -195,39 +186,6 @@
                 },
                 {
                     "name": "",
-                    "id": "c1f7a91b-d0fd-4a62-997e-7fb9b69bf235",
-                    "path": "<Gamepad>/rightStick",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": ";Gamepad",
-                    "action": "Look",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "8c8e490b-c610-4785-884f-f04217b23ca4",
-                    "path": "<Pointer>/delta",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": ";Keyboard&Mouse;Touch",
-                    "action": "Look",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "3e5f5442-8668-4b27-a940-df99bad7e831",
-                    "path": "<Joystick>/{Hatswitch}",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Joystick",
-                    "action": "Look",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "143bb1cd-cc10-4eca-a2f0-a3664166fe91",
                     "path": "<Gamepad>/rightTrigger",
                     "interactions": "",
@@ -262,7 +220,7 @@
                 {
                     "name": "",
                     "id": "b3504996-790c-453d-8d26-ba7b82d24843",
-                    "path": "<Gamepad>/rightTrigger",
+                    "path": "<Gamepad>/leftShoulder",
                     "interactions": "",
                     "processors": "",
                     "groups": "Gamepad",
@@ -297,7 +255,7 @@
                     "id": "2d3545da-bcc0-41f1-8302-517e4f69b0af",
                     "path": "<Gamepad>/rightStick",
                     "interactions": "",
-                    "processors": "",
+                    "processors": "StickDeadzone",
                     "groups": "Gamepad",
                     "action": "Aim",
                     "isComposite": false,
@@ -305,7 +263,7 @@
                 },
                 {
                     "name": "",
-                    "id": "0b5616ca-2f74-4c0a-a314-9d7956942750",
+                    "id": "db4d6f80-429e-4754-8487-c403623177c6",
                     "path": "<Mouse>/position",
                     "interactions": "",
                     "processors": "",

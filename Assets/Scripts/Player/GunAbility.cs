@@ -102,6 +102,7 @@ public class GunAbility : MonoBehaviour
     /// <param name="inputDirection"></param>
     public void UpdateAimDirection(Vector2 inputDirection)
     {
+        if (inputDirection == Vector2.zero) return;
         aimDirection = inputDirection;
     }
     private void Update()

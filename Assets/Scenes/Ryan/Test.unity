@@ -9489,8 +9489,16 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 21300000, guid: 16733427fb26eb94d82843b9a1e394a5, type: 3}
     - target: {fileID: 1943561922515540041, guid: 8aa31d23db44abf4d8a45e70050abf8d, type: 3}
+      propertyPath: m_DefaultControlScheme
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1943561922515540041, guid: 8aa31d23db44abf4d8a45e70050abf8d, type: 3}
       propertyPath: m_ActionEvents.Array.size
       value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 1943561922515540041, guid: 8aa31d23db44abf4d8a45e70050abf8d, type: 3}
+      propertyPath: m_NeverAutoSwitchControlSchemes
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1943561922515540041, guid: 8aa31d23db44abf4d8a45e70050abf8d, type: 3}
       propertyPath: m_ActionEvents.Array.data[0].m_ActionId
